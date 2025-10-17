@@ -72,6 +72,7 @@ body {
   gap: 2rem;
   justify-content: center;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
 .number {
@@ -112,6 +113,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  justify-content: center;
 }
 
 .answer:hover,
@@ -159,4 +161,42 @@ span.flag-icon {
 
 .results .icon {
   margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .question-container {
+    min-width: 90vw;
+    padding: 1rem;
+  }
+  .answer {
+    padding: 0.8rem 1.5rem;
+  }
+  .answers {
+    column-gap: 2rem;
+  }
+  .numbers-container {
+    gap: 0.8rem;
+  }
+  .title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 468px) {
+  .question-container {
+    min-width: 90vw;
+    padding: 1rem;
+  }
+  .answer {
+    padding: 0.8rem 1.2rem;
+  }
+  .answers {
+    column-gap: 2rem;
+  }
+  .numbers-container {
+    gap: 0.8rem;
+  }
+  .title {
+    font-size: 1.5rem;
+  }
 }
