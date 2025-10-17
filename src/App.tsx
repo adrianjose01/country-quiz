@@ -1,4 +1,5 @@
 import { ReactElement, useEffect, useState } from "react";
+import "country-flag-icons/react/3x2";
 
 function pickRandomItems<T>(objectArr: T[], quantity: number, value?: T): T[] {
   const filteredArr = value
@@ -17,12 +18,29 @@ function pickRandomItems<T>(objectArr: T[], quantity: number, value?: T): T[] {
   return newObject;
 }
 
+function flagEmojiToCountryCode(emoji: string): string {
+  return [...emoji]
+    .map((char) => String.fromCharCode(char.codePointAt(0)! - 0x1f1e6 + 65))
+    .join("");
+}
+
 function selectRandomQuestion(option: string, country: ICountry): ReactElement {
-  return (
-    <p className="question-title">
-      {`What country is ${country.capital} the capital?`}
-    </p>
-  );
+  const code = flagEmojiToCountryCode(country.flag);
+  if (option === "capital") {
+    return (
+      <p className="question-title">
+        {`What country is ${country.capital} the capital?`}
+      </p>
+    );
+  } else {
+    return (
+      <p className="question-title">
+        Which country does this flag
+        <span className={`flag-icon flag-icon-${code.toLowerCase()}`} /> belong
+        to? ;
+      </p>
+    );
+  }
 }
 
 function shuffleArray<T>(array: T[]): T[] {
