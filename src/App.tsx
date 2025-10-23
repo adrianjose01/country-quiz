@@ -1,5 +1,13 @@
 import { ReactElement, useEffect, useState } from "react";
 import "country-flag-icons/react/3x2";
+import Auth from "./components/Auth/Auth";
+import Profile from "./components/Profile/Profile";
+
+export interface User {
+  fullName: string;
+  id: string;
+  userEmail: string;
+}
 
 function pickRandomItems<T>(objectArr: T[], quantity: number, value?: T): T[] {
   const filteredArr = value
@@ -88,6 +96,7 @@ function App() {
   const [questionSelected, setQuestionSelected] = useState<number>(1);
   const [answeredQuestions, setAnsweredQuestions] = useState<number>(0);
   const [isGameFinished, setIsGameFinished] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
 
   function reloadGame() {
     window.location.reload();
@@ -96,7 +105,6 @@ function App() {
   function checkAnswer(answer: string) {
     if (questions[questionSelected - 1].isAnswered) return;
     if (answer === questions[questionSelected - 1].answer) {
-      console.log("Correct");
       setAnsweredQuestions((prev) => prev + 1);
     }
     setQuestions((prev) =>
@@ -115,18 +123,47 @@ function App() {
     setQuestionSelected((prev) => (prev >= 10 ? prev : prev + 1));
   }
 
-  useEffect(() => {
-    fetch("https://restcountries.com/v3.1/all?fields=name,capital,flag")
-      .then((res) => res.json())
-      .then((resData) => {
-        setAllCountries(
-          resData.map((item: any) => ({
-            name: item.name.common,
-            flag: item.flag,
-            capital: item.capital[0],
-          }))
-        );
+  async function fetchCountries() {
+    try {
+      const response = await fetch(
+        "https://restcountries.com/v3.1/all?fields=name,capital,flag"
+      );
+      const resData = await response.json();
+      setAllCountries(
+        resData.map((item: any) => ({
+          name: item.name.common,
+          flag: item.flag,
+          capital: item.capital[0],
+        }))
+      );
+    } catch (err) {
+      alert(err);
+    }
+  }
+
+  async function authenticateUser() {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const response = await fetch("http://localhost:3001/protected", {
+        headers: {
+          Authorization: token,
+        },
       });
+      const data = await response.json();
+      if (data.message === "Authenticated") {
+        return setUser(data.user);
+      }
+      setUser(null);
+      localStorage.removeItem("token");
+    } catch (err) {
+      alert(err);
+    }
+  }
+
+  useEffect(() => {
+    fetchCountries();
+    authenticateUser();
   }, []);
 
   useEffect(() => {
@@ -152,16 +189,14 @@ function App() {
   }, [allCountries]);
 
   useEffect(() => {
-    console.log(questions);
-    console.log(questions.filter((q) => q.isAnswered).length);
     if (questions.filter((q) => q.isAnswered).length === 10) {
-      console.log("Game Finished!");
       setIsGameFinished(true);
     }
   }, [questions]);
 
   return (
     <div className="app-container">
+      {user ? <Profile User={user} /> : <Auth />}
       {!isGameFinished ? (
         <>
           <section className="title-container">

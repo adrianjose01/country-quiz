@@ -1,0 +1,66 @@
+:root {
+  --bg-color: #393f6e;
+  --bg-color-lighter: #343964;
+  --white: #e2e4f3;
+  --gradient: linear-gradient(#e65895, #bc6be8);
+  --gray: #8b8eab50;
+}
+
+.nav {
+  position: fixed;
+  top: 0.8rem;
+  right: 2rem;
+}
+
+.nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+}
+
+.nav ul li {
+  color: var(--white);
+  cursor: pointer;
+}
+
+.nav ul li:hover {
+  opacity: 0.8;
+}
+
+/* Modals */
+
+.profileContainer,
+.scoresContainer {
+  color: var(--white);
+  min-width: 15rem;
+}
+
+.profileContainer h2,
+.scoresContainer h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin: 1rem 0;
+}
+
+.btnContainer {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.resetScores,
+.deleteAccount {
+  background: var(--gradient);
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  color: var(--white);
+  cursor: pointer;
+}
