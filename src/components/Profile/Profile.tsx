@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { User } from "../../App";
+import { User } from "../../context/dataContext";
 import MyModal from "../Modal";
 import styles from "./Profile.module.css";
 import ProfileModal from "./ProfileModal";
@@ -27,7 +27,7 @@ const Profile: React.FC<Props> = ({ User }) => {
         isOpen={isModalOpen}
       >
         {modalToOpen === "profile" && <ProfileModal user={User} />}
-        {modalToOpen === "scores" && <ScoresModal user={User} />}
+        {modalToOpen === "scores" && <ScoresModal />}
       </MyModal>
       <nav className={s.nav}>
         <ul>

@@ -1,13 +1,9 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useContext, useEffect, useState } from "react";
 import "country-flag-icons/react/3x2";
 import Auth from "./components/Auth/Auth";
 import Profile from "./components/Profile/Profile";
-
-export interface User {
-  fullName: string;
-  id: string;
-  userEmail: string;
-}
+import { DataContext } from "./context/dataContext";
+import UseUpdateScores from "./components/hooks/UseUpdateScores";
 
 function pickRandomItems<T>(objectArr: T[], quantity: number, value?: T): T[] {
   const filteredArr = value
@@ -96,7 +92,8 @@ function App() {
   const [questionSelected, setQuestionSelected] = useState<number>(1);
   const [answeredQuestions, setAnsweredQuestions] = useState<number>(0);
   const [isGameFinished, setIsGameFinished] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
+  const context = useContext(DataContext);
+  const { updateScores } = UseUpdateScores();
 
   function reloadGame() {
     window.location.reload();
@@ -141,29 +138,8 @@ function App() {
     }
   }
 
-  async function authenticateUser() {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-      const response = await fetch("http://localhost:3001/protected", {
-        headers: {
-          Authorization: token,
-        },
-      });
-      const data = await response.json();
-      if (data.message === "Authenticated") {
-        return setUser(data.user);
-      }
-      setUser(null);
-      localStorage.removeItem("token");
-    } catch (err) {
-      alert(err);
-    }
-  }
-
   useEffect(() => {
     fetchCountries();
-    authenticateUser();
   }, []);
 
   useEffect(() => {
@@ -188,15 +164,21 @@ function App() {
     );
   }, [allCountries]);
 
+  async function onUpdateScores(correctAnswers: number) {
+    const message = await updateScores(correctAnswers);
+    console.log(message);
+  }
+
   useEffect(() => {
     if (questions.filter((q) => q.isAnswered).length === 10) {
       setIsGameFinished(true);
+      onUpdateScores(answeredQuestions);
     }
   }, [questions]);
 
   return (
     <div className="app-container">
-      {user ? <Profile User={user} /> : <Auth />}
+      {context?.user ? <Profile User={context.user} /> : <Auth />}
       {!isGameFinished ? (
         <>
           <section className="title-container">
@@ -270,3 +252,6 @@ function App() {
   );
 }
 export default App;
+function useUpdateScores() {
+  throw new Error("Function not implemented.");
+}

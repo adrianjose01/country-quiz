@@ -1,5 +1,5 @@
 import React from "react";
-import { User } from "../../App";
+import { User } from "../../context/dataContext";
 import styles from "./Profile.module.css";
 const s = styles as unknown as { [key: string]: string };
 
@@ -23,8 +23,8 @@ const ProfileModal: React.FC<Props> = ({ user }) => {
         },
         body: JSON.stringify({ email: user.userEmail }),
       });
-      const data = await response.json();
-      if (response.status == 200) {
+      await response.json();
+      if (response.status === 200) {
         localStorage.removeItem("token");
         window.location.reload();
       }
